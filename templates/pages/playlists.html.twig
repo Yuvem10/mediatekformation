@@ -1,6 +1,6 @@
 {% extends "basefront.html.twig" %}
 {% block body %}
-    <table class="table table-striped" aria-describedby="playlists">
+    <table class="table table-striped" aria-describedby="playlists" id="playlists">
         <thead>
             <tr>
                 <th class="text-left align-top" scope="col">
@@ -17,8 +17,8 @@
                     </form>                    
                 </th>
                 <th>
-                    <a href="{{ path('playlists.nb', {nb:1}) }}" class="btn btn-info btn-sm active" role="button" aria-pressed="true"><</a>
-                    <a href="{{ path('playlists.nb', {nb:2}) }}" class="btn btn-info btn-sm active" role="button" aria-pressed="true">></a>
+                    <a href="{{ path('playlists.sort', {champ:'formations', ordre:'ASC'}) }}"  class="btn btn-info btn-sm active" role="button" aria-pressed="true"><</a>
+                    <a href="{{ path('playlists.sort', {champ:'formations', ordre:'DESC'}) }}" class="btn btn-info btn-sm active" role="button" aria-pressed="true">></a>
                 </th>
                 <th class="text-left align-top" scope="col">
                     catégories
@@ -71,4 +71,3 @@
         </tbody>
     </table>
 {% endblock %}
-

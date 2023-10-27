@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Playlist;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Repository\FormationRepository;
 
 /**
  * @extends ServiceEntityRepository<Playlist>
@@ -53,6 +54,21 @@ class PlaylistRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getResult();       
     } 
+
+    /**
+     * Retourne toutes les playlists triées sur le nom de la playlist
+     * @param type $champ
+     * @param type $ordre
+     * @return Playlist[]
+     */
+    public function findAllOrderByFormations($ordre): array{
+        return $this->createQueryBuilder('p')
+                ->leftjoin('p.formations', 'f')
+                ->groupBy('p.id')
+                ->orderBy('COUNT(f)', $ordre)
+                ->getQuery()
+                ->getResult();       
+    } 
 	
     /**
      * Enregistrements dont un champ contient une valeur
@@ -87,6 +103,23 @@ class PlaylistRepository extends ServiceEntityRepository
                     ->getResult();              
             
         }           
-    }  
+    }   
+    
+    /**
+     * Retourne le nombre de formations de la playlist
+     * @param type $id
+     * @return int
+     */
+    
+    public function findAllFormations(){
+        return $this->createQueryBuilder('p')
+                ->select('count(f.id)')
+                ->leftjoin('p.formations', 'f')
+                ->groupBy('p.id')
+                ->getQuery()
+                ->getResult();               
+    }
+
+
     
 }
