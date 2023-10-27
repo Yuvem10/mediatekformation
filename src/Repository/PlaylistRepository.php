@@ -87,23 +87,6 @@ class PlaylistRepository extends ServiceEntityRepository
                     ->getResult();              
             
         }           
-    }   
-    
-    /**
-     * Retourne le nombre de formations de la playlist
-     * @param type $id
-     * @return int
-     */
-    
-    public function findAllFormations(){
-        return $this->createQueryBuilder('p')
-                ->select('count(f.id)')
-                ->leftjoin('p.formations', 'f')
-                ->groupBy('p.id')
-                ->getQuery()
-                ->getResult();               
-    }
-
-
+    }  
     
 }
