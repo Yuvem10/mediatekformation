@@ -1,14 +1,25 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\Categorie;
 use App\Repository\CategorieRepository;
 use App\Repository\FormationRepository;
 use App\Form\FormationType;
 use App\Entity\Formation;
+use App\Entity\Playlist;
+use App\Repository\PlaylistRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\Length;
 
 /**
  * Controleur des formations
@@ -100,17 +111,88 @@ class AdminController extends AbstractController {
      * @return Response
      */
     public function edit(Formation $formation, Request $request): Response {
-        $formFormation = $this->createForm(FormationType::class, $formation);
         
+        $formFormation = $this->createForm(FormationType::class, $formation);
+
         $formFormation->handleRequest($request);
         if ($formFormation->isSubmitted()&& $formFormation->isValid()){
             $this->formationRepository->add($formation, true);
             return $this->redirectToRoute('admin');
         }
         
-        return $this->render("/admin/form.admin.html.twig", ['formation' => $formation,
-                    'formFormation' => $formFormation->createView()
+        return $this->render("/admin/edit.html.twig", ['formation' => $formation,
+                    'form' => $formFormation->createView()
         ]);
     }
 
+    /**
+     * @Route("/admin/ajout", name="admin.ajout")
+     */
+
+     public function ajout(Request $request, EntityManagerInterface $manager, CategorieRepository $categorieRepository, PlaylistRepository $playlistRepository) : Response {
+        $form = $this->createFormBuilder()
+        ->add('title', TextType::class, [
+            'label'=> 'Titre',
+        ])
+        ->add('description', TextareaType::class, [
+            'label' => 'Description',
+            'required' => false
+        ])
+        ->add('publishedAt', DateType::class, [
+            'widget' => 'single_text',
+        ])
+        ->add('playlist', EntityType::class, [
+            'class' => Playlist::class,
+            'choice_label' => 'name',
+            'multiple' => false,
+            'required' => true
+        ])
+        ->add('categories', EntityType::class, [
+            'class' => Categorie::class,
+            'choice_label' => 'name',
+            'multiple' => true,
+            'required' => false
+        ])
+        ->add('VideoId', TextType::class, [
+            'label'=> 'Url de la vidéo',
+        ])
+        
+        ->getForm();
+
+        $form->handleRequest($request);
+
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $formation = new Formation();
+            $formation->setTitle($form->get('title')->getData());
+            $formation->setDescription($form->get('description')->getData());
+            $formation->setPublishedAt($form->get('publishedAt')->getData());
+            $formation->setVideoId($form->get('VideoId')->getData());
+            
+            $categories = $form->get('categories')->getData();
+
+            for ($i = 0; $i < count($categories); $i++){
+                $formation->addCategory($categories[$i]);
+            }
+
+            $nameOfPlaylist = $form->get('playlist')->getData();
+
+            $playlist = $playlistRepository->findOneBy([
+                'name'=> $nameOfPlaylist->getName()
+            ]);
+
+            $formation->setPlaylist($playlist);
+
+            $manager->persist($formation);
+
+            $manager->flush();
+
+            return $this->redirectToRoute('admin');
+        }
+
+        return $this->render('/admin/addform.html.twig', [
+            'form' => $form->createView()
+        ]);
+     }
 }

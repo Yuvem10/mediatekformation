@@ -1,0 +1,24 @@
+{{form_start(form)}}
+
+        {{form_label(form.title, null, {'label_attr':{'class':'form-label'}})}}
+        {{form_widget(form.title, {'attr':{'class':'form-control'}})}}
+
+        {{form_label(form.description, null, {'label_attr':{'class':'form-label'}})}}
+        {{form_widget(form.description, {'attr':{'class':'form-control'}})}}
+        
+        {{form_label(form.publishedAt, null, {'label_attr':{'class':'form-label'}})}}
+        {{form_widget(form.publishedAt, {'attr':{'class':'form-control'}})}}
+
+        {{form_label(form.playlist, null, {'label_attr':{'class':'form-label'}})}}
+        {{form_widget(form.playlist, {'attr':{'class':'form-control'}})}}
+        
+        {{form_label(form.VideoId, null, {'label_attr':{'class':'form-label'}})}}
+        {{form_widget(form.VideoId, {'attr':{'class':'form-control'}})}}
+
+        {{form_label(form.categories, null, {'label_attr':{'class':'form-label'}})}}
+        {{form_widget(form.categories, {'attr':{'class':'form-control'}})}}
+      
+        {{form_rest(form)}}
+        <button type="submit" class="btn btn-primary" style="margin-top:20px">Enregistrer</button>
+
+    {{form_end(form)}}
