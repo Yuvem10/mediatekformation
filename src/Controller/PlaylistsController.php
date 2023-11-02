@@ -112,15 +112,4 @@ class PlaylistsController extends AbstractController {
         ]);        
     }  
     
-     /**
-     * @Route("/playlists/tri/{nb}", name="playlists.nb")
-     * @param type $nb
-     * @return Response
-     */
-    public function test($nb) {
-        $test = $this->playlistRepository->findAllPlaylistsByNb($nb);
-        return dump($test);
-    }          
-	
-
 }

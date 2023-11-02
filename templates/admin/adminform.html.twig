@@ -1,4 +1,6 @@
 {{form_start(form)}}
+        
+        {{ form_errors(form) }}
 
         {{form_label(form.title, null, {'label_attr':{'class':'form-label'}})}}
         {{form_widget(form.title, {'attr':{'class':'form-control'}})}}

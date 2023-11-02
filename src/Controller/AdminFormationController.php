@@ -20,13 +20,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Controleur des formations
  *
  * @author emds
  */
-class AdminController extends AbstractController {
+class AdminFormationController extends AbstractController {
 
     /**
      * 
@@ -129,7 +131,7 @@ class AdminController extends AbstractController {
      * @Route("/admin/ajout", name="admin.ajout")
      */
 
-     public function ajout(Request $request, EntityManagerInterface $manager, CategorieRepository $categorieRepository, PlaylistRepository $playlistRepository) : Response {
+     public function ajout(Request $request, EntityManagerInterface $manager, CategorieRepository $categorieRepository, PlaylistRepository $playlistRepository, ValidatorInterface $validator) : Response {
         $form = $this->createFormBuilder()
         ->add('title', TextType::class, [
             'label'=> 'Titre',
@@ -140,6 +142,7 @@ class AdminController extends AbstractController {
         ])
         ->add('publishedAt', DateType::class, [
             'widget' => 'single_text',
+            'label' => 'Date'
         ])
         ->add('playlist', EntityType::class, [
             'class' => Playlist::class,
@@ -190,7 +193,7 @@ class AdminController extends AbstractController {
 
             return $this->redirectToRoute('admin');
         }
-
+        
         return $this->render('/admin/addform.html.twig', [
             'form' => $form->createView()
         ]);
