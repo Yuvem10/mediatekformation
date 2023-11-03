@@ -19,6 +19,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\LessThan;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -142,7 +143,13 @@ class AdminFormationController extends AbstractController {
         ])
         ->add('publishedAt', DateType::class, [
             'widget' => 'single_text',
-            'label' => 'Date'
+            'label' => 'Date',
+            'constraints' => [
+                new LessThan([
+                    'value' => new \DateTime(), // Utilisez la date actuelle comme valeur de comparaison
+                    'message' => 'La date ne peut pas être postérieure à aujourd\'hui',
+                ]),
+            ],
         ])
         ->add('playlist', EntityType::class, [
             'class' => Playlist::class,

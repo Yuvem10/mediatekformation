@@ -14,6 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Validator\Constraints\LessThan;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -31,6 +32,12 @@ class FormationType extends AbstractType {
         ])
         ->add('publishedAt', DateType::class, [
             'widget' => 'single_text',
+            'constraints' => [
+                new LessThan([
+                    'value' => new \DateTime(), // Utilisez la date actuelle comme valeur de comparaison
+                    'message' => 'La date ne peut pas être postérieure à aujourd\'hui',
+                ]),
+            ],
         ])
         ->add('playlist', EntityType::class, [
             'class' => Playlist::class,
