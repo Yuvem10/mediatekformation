@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin Catégories{% endblock %}
+{% block top%}
+     <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('admin') }}">Formations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('admin.playlists') }}">Playlists</a>
+                    </li>   
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('admin.categories') }}">Catégories</a>
+                    </li>                         
+                </ul>
+            </div>
+        </nav>        
+{% endblock %}
+{% block body %}
+<table class="table table-striped" aria-describedby="categories" id="categories">
+<thead>
+    <form class="form-inline mt-1" method="POST" action="{{ path('admin.categories.ajout') }}">
+        <div class="form-group mr-1 mb-2">
+            <input type="text" class="sm" name="name">
+            <button type="submit" class="btn btn-primary mb-2 btn-sm">Ajouter</button>
+        </div>
+    </form>           
+    {% set currentPath = path(app.request.attributes.get('_route'),
+                       app.request.attributes.get('_route_params')) %}
+    {% if currentPath == '/mediatekformation/public/index.php/admin/categories/duplicated' %}        
+    {{error}}  
+    {% endif %}          
+</thead>
+ <tbody>
+        <!-- boucle sur les catégories -->
+            {% if categories|length > 0 %}
+                {% for k in 0..categories|length-1 %}
+                    <tr class="align-middle">
+                        <td>
+                            <h5 class="text-info">
+                                {{ categories[k].name }}
+                            </h5>
+                        </td>   
+                        <td>
+                        {% if categories[k].formations|length > 0 %}
+                        <a href="" class="btn btn-danger" style="margin-left:900px" onclick="return confirm('Vous ne pouvez pas supprimer {{ categories[k].name }} car elle est ratachée à {{categories[k].formations|length}} formations')">Supprimer</a>
+                        {% endif %}
+                        {% if categories[k].formations|length == 0 %}
+                            <a href="{{path('admin.categorie.suppr', {id:categories[k].id}) }}"  style="margin-left:900px" class="btn btn-danger" onclick="return confirm('Etes-vous sûr de vouloir supprimer {{ categories[k].name }} ?')">Supprimer</a>
+                        {% endif %}
+                        </td>           						    
+                    </tr>
+                {% endfor %}	
+            {% endif %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -34,7 +34,7 @@ class FormationType extends AbstractType {
             'widget' => 'single_text',
             'constraints' => [
                 new LessThan([
-                    'value' => new \DateTime(), // Utilisez la date actuelle comme valeur de comparaison
+                    'value' => new \DateTime(),
                     'message' => 'La date ne peut pas être postérieure à aujourd\'hui',
                 ]),
             ],
