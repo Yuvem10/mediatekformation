@@ -23,6 +23,8 @@ use Symfony\Component\Validator\Constraints\LessThan;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Goutte\Client;
+
 
 /**
  * Controleur des formations
@@ -178,6 +180,18 @@ class AdminFormationController extends AbstractController {
             $formation->setTitle($form->get('title')->getData());
             $formation->setDescription($form->get('description')->getData());
             $formation->setPublishedAt($form->get('publishedAt')->getData());
+            
+            
+            //requete pour tester si la vidéo est valide
+            //mise en forme de la requête 
+            $lien = $form->get('VideoId')->getData();
+            $url = "https://www.youtube.com/embed/" . $lien;
+            
+
+            dump(get_headers($url));die;
+
+
+
             $formation->setVideoId($form->get('VideoId')->getData());
             
             $categories = $form->get('categories')->getData();
