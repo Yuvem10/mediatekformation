@@ -27,20 +27,13 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AdminCategoriesController extends AbstractController
 {
-     /**
-     * 
-     * @var FormationRepository
-     */
-    private $formationRepository;
-    
     /**
      * 
      * @var CategorieRepository
      */
     private $categorieRepository;
     
-    public function __construct(FormationRepository $formationRepository, CategorieRepository $categorieRepository) {
-        $this->formationRepository = $formationRepository;
+    public function __construct(CategorieRepository $categorieRepository) {
         $this->categorieRepository = $categorieRepository;
     }
     
