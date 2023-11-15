@@ -24,6 +24,7 @@
     <form class="form-inline mt-1" method="POST" action="{{ path('admin.categories.ajout') }}">
         <div class="form-group mr-1 mb-2">
             <input type="text" class="sm" name="name">
+            <input type="hidden" name ="token" value="{{ csrf_token('add') }}">
             <button type="submit" class="btn btn-primary mb-2 btn-sm">Ajouter</button>
         </div>
     </form>           

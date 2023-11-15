@@ -78,28 +78,31 @@ class AdminCategoriesController extends AbstractController
      * @return Response
      */
     public function ajout(Request $request): Response{
-        $ret = $this->redirectToRoute('admin.categories');
+        if ($this->isCsrfTokenValid('add', $request->get("token"))) {
+            $ret = $this->redirectToRoute('admin.categories');
 
-        $categorieName = $request->get("name");
-        $repository = $this->categorieRepository->findAll();
+            $categorieName = $request->get("name");
+            $repository = $this->categorieRepository->findAll();
 
-        $duplicateFound = false;
+            $duplicateFound = false;
 
-        foreach ($repository as $oneCategorie){
-           $name = $oneCategorie->getName();
-           if (trim(strtolower($categorieName)) == trim(strtolower($name))){
-                $ret = $this->redirectToRoute('admin.categories.duplicated');
-                $duplicateFound = true;
-           }
-        }
+            foreach ($repository as $oneCategorie){
+            $name = $oneCategorie->getName();
+            if (trim(strtolower($categorieName)) == trim(strtolower($name))){
+                    $ret = $this->redirectToRoute('admin.categories.duplicated');
+                    $duplicateFound = true;
+            }
+            }
 
-        if(!$duplicateFound)
-        {
-            $categorie = new Categorie();
-            $categorie->setName($categorieName);
-            $this->categorieRepository->add($categorie, true);
-        }
+            if(!$duplicateFound)
+            {
+                $categorie = new Categorie();
+                $categorie->setName($categorieName);
+                $this->categorieRepository->add($categorie, true);
+            }
 
-        return $ret;       
-    }        
+            return $ret;       
+        }   
+        return $this->redirectToRoute('admin.categories');
+    }
 }
