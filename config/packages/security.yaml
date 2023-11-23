@@ -20,10 +20,9 @@ security:
             # provider: app_user_provider
             form_login:
                 login_path: oauth_login
-                check_path: oauth_login
             custom_authenticators:
                 - App\Security\KeycloakAuthenticator
-            
+
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 
@@ -33,7 +32,7 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-         - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:
