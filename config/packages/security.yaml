@@ -21,13 +21,11 @@ security:
             form_login:
                 login_path: oauth_login
             custom_authenticators:
-<<<<<<< HEAD
-                - App\src\Security\KeycloakAuthenticator
-            
-=======
                 - App\Security\KeycloakAuthenticator
+            logout:
+                path: logout
 
->>>>>>> 96a157015e2572cc8252880e64bfc1a1dfa4290f
+
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 

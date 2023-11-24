@@ -21,14 +21,7 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> 96a157015e2572cc8252880e64bfc1a1dfa4290f
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-
-    App\Security\:
-        resource: '../src/Security/*'
    

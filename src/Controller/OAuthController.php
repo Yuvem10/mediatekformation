@@ -15,12 +15,18 @@ class OAuthController extends AbstractController
      */
     public function index(ClientRegistry $clientRegistry): RedirectResponse
     {
-       return $clientRegistry->getClient('keycloak')->redirect(['identify']);
+       return $clientRegistry->getClient('keycloak')->redirect();
     }
     /**
      * @Route("/oauth/callback", name="oauth_check")
      */
     public function connectCheckAction(Request $request, ClientRegistry $clientRegistry){
+
+    }
+     /**
+     * @Route("/logout", name="logout")
+     */    
+    public function logout(){
 
     }
 }

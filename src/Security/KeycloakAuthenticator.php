@@ -1,11 +1,9 @@
 <?php
-<<<<<<< HEAD
-namespace App\src\Security;
-=======
 
 namespace App\Security;
->>>>>>> 96a157015e2572cc8252880e64bfc1a1dfa4290f
 
+
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
@@ -15,7 +13,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\User\User;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
@@ -44,12 +41,11 @@ class KeycloakAuthenticator extends OAuth2Authenticator implements Authenticatio
         $client = $this->clientRegistry->getClient('keycloak');
 
         $accessToken = $this->fetchAccessToken($client);
- 
+        
         return new SelfValidatingPassport(
             new UserBadge($accessToken->getToken(), function() use ($accessToken, $client){
                 /** @var KeycloakUser $keycloakUser */
                 $keycloakUser = $client->fetchUserFromToken($accessToken);
-                
                 // 1) recherche du user dans la BDD à partir de son id Keycloak
                 $existingUser = $this->entityManager
                         ->getRepository(User::class)
