@@ -178,6 +178,7 @@ class AdminFormationController extends AbstractController
                 'constraints' => [
                     new LessThan([
                         'value' => new \DateTime(), // Utilisez la date actuelle comme valeur de comparaison
+                        'message' => 'La date ne peut pas être postérieure à aujourd\'hui',
                     ]),
                 ],
             ])
