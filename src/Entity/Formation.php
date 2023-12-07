@@ -46,9 +46,6 @@ class Formation
 
     /**
      * @ORM\Column(type="string", length=20, nullable=true)
-     * @Assert\Length(
-     *      min= 2, 
-     *      minMessage="Le lien est faux")
      */
     private $videoId;
 

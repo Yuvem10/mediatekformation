@@ -16,6 +16,8 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -140,38 +142,13 @@ class AdminFormationController extends AbstractController
      * @Route("/admin/ajout", name="admin.ajout")
      */
 
-    public function ajout(Request $request, EntityManagerInterface $manager, PlaylistRepository $playlistRepository): Response
+    public function ajout(Formation $formation = null, Request $request, EntityManagerInterface $manager, PlaylistRepository $playlistRepository): Response
     {
-        $form = $this->createFormBuilder()
-            ->add('title', TextType::class, [
-                'label' => 'Titre',
-            ])
-            ->add('description', TextareaType::class, [
-                'label' => 'Description',
-                'required' => false
-            ])
-            ->add('publishedAt', DateType::class, [
-                'widget' => 'single_text',
-                'label' => 'Date'
-            ])
-            ->add('playlist', EntityType::class, [
-                'class' => Playlist::class,
-                'choice_label' => 'name',
-                'multiple' => false,
-                'required' => true
-            ])
-            ->add('categories', EntityType::class, [
-                'class' => Categorie::class,
-                'choice_label' => 'name',
-                'multiple' => true,
-                'required' => false
-            ])
-            ->add('VideoId', TextType::class, [
-                'label' => 'Url de la vidéo',
-                'required' => true
-            ])
+        if ($formation == null){
+            $formation = new Formation;
+        }
 
-            ->getForm();
+        $form = $this->createForm(FormationType::class, $formation);
 
         $form->handleRequest($request);
 

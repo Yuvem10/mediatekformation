@@ -34,7 +34,8 @@ class FormationType extends AbstractType {
             'required' => false
         ])
         ->add('publishedAt', DateType::class, [
-            'widget' => 'single_text'
+            'widget' => 'single_text',
+            'label' => 'Date'
         ])
         ->add('playlist', EntityType::class, [
             'class' => Playlist::class,
@@ -62,10 +63,13 @@ class FormationType extends AbstractType {
             if ($response->getStatusCode() === 200) {
                 $content = $response->getContent();
                 if (strpos($content, '<meta name="title" content="">') !== false) {
-                    $form->get('VideoId')->addError(new FormError('Le lien vers la vidéo est incorrect'));
+                    $form->get('VideoId')->addError(new FormError('Aucune vidéo ne correspond à ce lien'));
                 }else{
                     
                 }}
+            else{
+                $form->get('VideoId')->addError(new FormError('Une erreur serveur est survenue'));
+            }
         });
     }
 
