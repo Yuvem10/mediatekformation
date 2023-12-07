@@ -10,13 +10,10 @@ use App\Entity\Formation;
 use App\Entity\Playlist;
 use App\Repository\PlaylistRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use PhpParser\Node\Stmt\ElseIf_;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpClient\HttpClient;
@@ -24,11 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\LessThan;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Goutte\Client;
-
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 
 /**
@@ -133,25 +126,10 @@ class AdminFormationController extends AbstractController
 
         $formFormation->handleRequest($request);
 
-        //requete pour tester si la vidéo est valide
-        //mise en forme de la requête 
-        $lien = $formFormation->get('VideoId')->getData();
-        $url = "https://youtu.be/" . $lien;
-
-        // Passage dans la fonction de validation 
-        $test = $this->validateYoutubeURL($url);
-
-        // Exploitation des résultats
-        if ($test === 1) {
-            $formFormation->get('VideoId')->addError(new FormError('Le lien vers la vidéo est incorrect'));
-        } elseif ($test === 3) {
-            $formFormation->get('VideoId')->addError(new FormError('Une erreur serveur à été détecté'));
-        }
         if ($formFormation->isSubmitted() && $formFormation->isValid()) {
             $this->formationRepository->add($formation, true);
             return $this->redirectToRoute('admin');
         }
-
         return $this->render("/admin/edit.html.twig", [
             'formation' => $formation,
             'form' => $formFormation->createView()
@@ -162,7 +140,7 @@ class AdminFormationController extends AbstractController
      * @Route("/admin/ajout", name="admin.ajout")
      */
 
-    public function ajout(Request $request, EntityManagerInterface $manager, CategorieRepository $categorieRepository, PlaylistRepository $playlistRepository, ValidatorInterface $validator): Response
+    public function ajout(Request $request, EntityManagerInterface $manager, PlaylistRepository $playlistRepository): Response
     {
         $form = $this->createFormBuilder()
             ->add('title', TextType::class, [
@@ -174,13 +152,7 @@ class AdminFormationController extends AbstractController
             ])
             ->add('publishedAt', DateType::class, [
                 'widget' => 'single_text',
-                'label' => 'Date',
-                'constraints' => [
-                    new LessThan([
-                        'value' => new \DateTime(), // Utilisez la date actuelle comme valeur de comparaison
-                        'message' => 'La date ne peut pas être postérieure à aujourd\'hui',
-                    ]),
-                ],
+                'label' => 'Date'
             ])
             ->add('playlist', EntityType::class, [
                 'class' => Playlist::class,
@@ -202,22 +174,6 @@ class AdminFormationController extends AbstractController
             ->getForm();
 
         $form->handleRequest($request);
-
-        //requete pour tester si la vidéo est valide
-        //mise en forme de la requête 
-        $lien = $form->get('VideoId')->getData();
-        $url = "https://youtu.be/" . $lien;
-
-        // Passage dans la fonction de validation 
-        $test = $this->validateYoutubeURL($url);
-
-        // Exploitation des résultats
-        if ($test === 1) {
-            $form->get('VideoId')->addError(new FormError('Le lien vers la vidéo est incorrect'));
-        } elseif ($test === 3) {
-            $form->get('VideoId')->addError(new FormError('Une erreur serveur à été détecté'));
-        }
-
 
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -252,20 +208,5 @@ class AdminFormationController extends AbstractController
             'form' => $form->createView()
         ]);
     }
-    private function validateYoutubeURL($url)
-    {
-        $httpClient = HttpClient::create();
-        $response = $httpClient->request('GET', $url);
-
-        if ($response->getStatusCode() === 200) {
-            $content = $response->getContent();
-            if (strpos($content, '<meta name="title" content="">') !== false) {
-                return 1;
-            } else {
-                return 2;
-            }
-        } else {
-            return 3;
-        }
-    }
+   
 }

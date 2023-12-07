@@ -8,6 +8,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\HttpClient\HttpClient;
 
 /**
  * @ORM\Entity(repositoryClass=FormationRepository::class)
@@ -28,6 +30,7 @@ class Formation
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Assert\LessThanOrEqual("today", message="La date ne peut pas être postérieure à aujourd'hui")
      */
     protected $publishedAt;
 
@@ -43,6 +46,9 @@ class Formation
 
     /**
      * @ORM\Column(type="string", length=20, nullable=true)
+     * @Assert\Length(
+     *      min= 2, 
+     *      minMessage="Le lien est faux")
      */
     private $videoId;
 
@@ -166,4 +172,5 @@ class Formation
 
         return $this;
     }
+   
 }

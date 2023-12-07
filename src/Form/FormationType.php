@@ -14,10 +14,13 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints\LessThan;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\HttpClient\HttpClient;
 
 class FormationType extends AbstractType {
 
@@ -31,13 +34,7 @@ class FormationType extends AbstractType {
             'required' => false
         ])
         ->add('publishedAt', DateType::class, [
-            'widget' => 'single_text',
-            'constraints' => [
-                new LessThan([
-                    'value' => new \DateTime(),
-                    'message' => 'La date ne peut pas être postérieure à aujourd\'hui',
-                ]),
-            ],
+            'widget' => 'single_text'
         ])
         ->add('playlist', EntityType::class, [
             'class' => Playlist::class,
@@ -54,8 +51,22 @@ class FormationType extends AbstractType {
         ->add('VideoId', TextType::class, [
             'label'=> 'Url de la vidéo',
             'required' => true
-            
         ]);
+
+        $builder->addEventListener(FormEvents::SUBMIT, function(FormEvent $event){
+            $form = $event->getForm();
+            $lien = $form->get('VideoId')->getData();
+            $url = "https://youtu.be/" . $lien;
+            $httpClient = HttpClient::create();
+            $response = $httpClient->request('GET', $url);
+            if ($response->getStatusCode() === 200) {
+                $content = $response->getContent();
+                if (strpos($content, '<meta name="title" content="">') !== false) {
+                    $form->get('VideoId')->addError(new FormError('Le lien vers la vidéo est incorrect'));
+                }else{
+                    
+                }}
+        });
     }
 
 
