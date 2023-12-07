@@ -132,6 +132,21 @@ class AdminFormationController extends AbstractController
         $formFormation = $this->createForm(FormationType::class, $formation);
 
         $formFormation->handleRequest($request);
+
+        //requete pour tester si la vidéo est valide
+        //mise en forme de la requête 
+        $lien = $formFormation->get('VideoId')->getData();
+        $url = "https://youtu.be/" . $lien;
+
+        // Passage dans la fonction de validation 
+        $test = $this->validateYoutubeURL($url);
+
+        // Exploitation des résultats
+        if ($test === 1) {
+            $formFormation->get('VideoId')->addError(new FormError('Le lien vers la vidéo est incorrect'));
+        } elseif ($test === 3) {
+            $formFormation->get('VideoId')->addError(new FormError('Une erreur serveur à été détecté'));
+        }
         if ($formFormation->isSubmitted() && $formFormation->isValid()) {
             $this->formationRepository->add($formation, true);
             return $this->redirectToRoute('admin');
@@ -181,30 +196,28 @@ class AdminFormationController extends AbstractController
             ])
             ->add('VideoId', TextType::class, [
                 'label' => 'Url de la vidéo',
-                'required' => true,
-                
+                'required' => true
             ])
 
             ->getForm();
 
         $form->handleRequest($request);
 
-            //requete pour tester si la vidéo est valide
-            //mise en forme de la requête 
-            $lien = $form->get('VideoId')->getData();
-            $url = "https://youtu.be/" . $lien;
+        //requete pour tester si la vidéo est valide
+        //mise en forme de la requête 
+        $lien = $form->get('VideoId')->getData();
+        $url = "https://youtu.be/" . $lien;
 
-            // Passage dans la fonction de validation 
-            $test = $this->validateYoutubeURL($url);
-            
-            // Exploitation des résultats
-            if ($test === 1) {
-            
-            }
-            elseif ($test === 3) {
-               
-            }
-            
+        // Passage dans la fonction de validation 
+        $test = $this->validateYoutubeURL($url);
+
+        // Exploitation des résultats
+        if ($test === 1) {
+            $form->get('VideoId')->addError(new FormError('Le lien vers la vidéo est incorrect'));
+        } elseif ($test === 3) {
+            $form->get('VideoId')->addError(new FormError('Une erreur serveur à été détecté'));
+        }
+
 
         if ($form->isSubmitted() && $form->isValid()) {
 

@@ -18,6 +18,7 @@
         
         {{form_label(form.VideoId, null, {'label_attr':{'class':'form-label'}})}}
         {{form_widget(form.VideoId, {'attr':{'class':'form-control'}})}}
+        {{ form_errors(form.VideoId) }}
       
         {{form_label(form.categories, null, {'label_attr':{'class':'form-label'}})}}
         {{form_widget(form.categories, {'attr':{'class':'form-control'}})}}

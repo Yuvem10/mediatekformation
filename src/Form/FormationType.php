@@ -53,6 +53,7 @@ class FormationType extends AbstractType {
         ])
         ->add('VideoId', TextType::class, [
             'label'=> 'Url de la vidéo',
+            'required' => true
         ]);
     }
 
