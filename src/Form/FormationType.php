@@ -57,7 +57,14 @@ class FormationType extends AbstractType {
         $builder->addEventListener(FormEvents::SUBMIT, function(FormEvent $event){
             $form = $event->getForm();
             $lien = $form->get('VideoId')->getData();
+
+            if (str_contains($form->get('VideoId')->getData(), "https://youtu.be/")){
+                $lien =  $form->get('VideoId')->getData();
+                $lien = str_replace("https://youtu.be/", "", $form->get('VideoId')->getData());  
+            }
+            
             $url = "https://youtu.be/" . $lien;
+            
             $httpClient = HttpClient::create();
             $response = $httpClient->request('GET', $url);
             if ($response->getStatusCode() === 200) {

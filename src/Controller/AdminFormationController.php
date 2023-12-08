@@ -129,6 +129,11 @@ class AdminFormationController extends AbstractController
         $formFormation->handleRequest($request);
 
         if ($formFormation->isSubmitted() && $formFormation->isValid()) {
+            if (str_contains($formFormation->get('VideoId')->getData(), "https://youtu.be/")){
+                $rewrite =  $formFormation->get('VideoId')->getData();
+                $rewrite = str_replace("https://youtu.be/", "", $formFormation->get('VideoId')->getData());
+            }
+            $formation->setVideoId($rewrite);
             $this->formationRepository->add($formation, true);
             return $this->redirectToRoute('admin');
         }
@@ -158,7 +163,11 @@ class AdminFormationController extends AbstractController
             $formation->setTitle($form->get('title')->getData());
             $formation->setDescription($form->get('description')->getData());
             $formation->setPublishedAt($form->get('publishedAt')->getData());
-            $formation->setVideoId($form->get('VideoId')->getData());
+            if (str_contains($form->get('VideoId')->getData(), "https://youtu.be/")){
+                $rewrite =  $form->get('VideoId')->getData();
+                $rewrite = str_replace("https://youtu.be/", "", $form->get('VideoId')->getData());
+            }
+            $formation->setVideoId($rewrite);
 
             $categories = $form->get('categories')->getData();
 
